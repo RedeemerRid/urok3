@@ -4,6 +4,7 @@
 #include <fstream>
 #include <io.h>
 #include <stdio.h>
+#include <iomanip>
 
 using namespace std;
 
@@ -15,8 +16,8 @@ private:
 	double m_length; // длина
 	double m_depth;  // глубина
 	double m_S;  // площать поверхности
-	double m_V;
-	char n[4]{ "ups" };
+	double m_V; // объем водоема
+	char n[4]{ "ups" }; // так просто так по умолчанию
 
 	void createNameR(char* nameR)
 	{
@@ -27,6 +28,8 @@ private:
 			m_nameR[i] = nameR[i];
 		}
 	}
+
+	//friend istream& operator >> (istream& is, Reservoir& reservoir);
 
 public:
 	Reservoir() : Reservoir(n, 0, 0, 0, 0) { }
@@ -49,7 +52,7 @@ public:
 		setlength(other.m_length);
 		setdepth(other.m_depth);
 	}
-	~Reservoir(){}
+	~Reservoir() {}
 	
 	void setnameR(char* nameR) 	{createNameR(nameR);}
 	char* getnameR() const { return m_nameR; }
@@ -62,7 +65,7 @@ public:
 				
 	void addR();
 
-	void print() const;
+	void print();
 	
 	double V();
 	
@@ -71,6 +74,28 @@ public:
 	char* getType();
 	
 };
+/*
+istream& operator >> (istream& is, Reservoir& reservoir)
+{
+	is >> reservoir.m_nameR;
+	is >> reservoir.m_width;
+	is >> reservoir.m_length;
+	is >> reservoir.m_depth;
+	
+	return is;
+}
+*/
+ostream& operator << (ostream& os, Reservoir& reservoir)
+{
+		
+	os << left << setw(35) <<  reservoir.getnameR() << setw(15) << reservoir.getwidth() << setw(15) << reservoir.getlength() << setw(15) << reservoir.getdepth() << endl;
+	/*
+	os << "ФИО:" << a.getfio() << "Домашнийтелефон:" << a.gethphon()
+		<< "Рабочийтелефон:" << a.getwphon() << "Мобильныйтелефон:" << a.getmphon()
+		<< "Введитедоп.инфо.:" << a.getdopinfo();
+	*/
+	return os;
+}
 
 void Reservoir::addR()
 {
@@ -89,7 +114,7 @@ void Reservoir::addR()
 	cin >> depth;
 	setdepth(depth);
 }
-void Reservoir::print() const
+void Reservoir::print() 
 {
 	cout << "name : " << m_nameR << endl;
 	cout << "width : " << m_width << endl;
@@ -361,6 +386,56 @@ void copyR(Reservoir*& reservoir, int& sizeR)
 	system("pause");
 }
 
+void savedR(Reservoir*& reservoir, int& nameR)
+{
+	fstream fs;
+	fs.open("Reservoir.txt", fstream::out);
+	if (!fs.is_open())
+	{
+		cout << "Ошибка открытия" << endl;
+	}
+	else
+	{
+		cout << "Файл открыт" << endl;
+		fs << left << setw(20) << "Название водоема" << setw(10) << "Ширина" << setw(10) << "Длина" << setw(10) << "Глубина" << endl << endl;
+		for (int i = 0; i < nameR; i++)
+		{
+			
+			fs << reservoir[i] << "\n";
+		}
+	}
+	fs.close();
+
+}
+
+void savedR_bin(Reservoir*& reservoir, int& sizeR)
+{
+	FILE* file;
+	const char* filename = "Reservoir_bin.txt";
+	fopen_s(&file, filename, "wb");
+	fwrite(&reservoir[0], sizeof(Reservoir), sizeR, file);
+	fclose(file);
+}
+
+void loadR(Reservoir* reservoir, int& sizeR)
+{
+	string line;
+	ifstream myfile("example.txt");
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			cout << line << '\n';
+		}
+		myfile.close();
+	}
+
+	else cout << "Unable to open file";
+
+	system("pause");
+	
+}
+
 int main()
 {
 	setlocale(LC_ALL, "rus");
@@ -384,6 +459,7 @@ int main()
 		cout << "8 - Определение Площади поверхности Водоема" << endl;
 		cout << "9 - Определение Типов  Водоема" << endl;
 		cout << "10 - Сравнение площади Водоемов одного типа" << endl;
+		cout << "11 - Записать В Файл Бинарный" << endl;
 
 		cout << "0 - Выход" << endl;
 		cout << "    Выберите из списка что вы хотите сделать : ";
@@ -404,6 +480,7 @@ int main()
 			cout << "8 - Определение Площади поверхности Водоема" << endl;
 			cout << "9 - Определение Типов  Водоема" << endl;
 			cout << "10 - Сравнение площади Водоемов одного типа" << endl;
+			cout << "11 - Записать В Файл Бинарный" << endl;
 			cout << "0 - Выход" << endl;
 			cout << "    Выберите из списка что вы хотите сделать : ";
 		}
@@ -426,18 +503,13 @@ int main()
 		case 3://2
 			delR(reservoir, sizeR);
 			break;
-			/*
+			
 		case 4://2
-			savedR(reservoir, m);
+			savedR(reservoir, sizeR);
 			break;
 		case 5://2
-			loaddR(reservoir, m);
+			loadR(reservoir, sizeR);
 			break;
-		
-		case 7://2
-			sortR(reservoir, m);
-			break;
-		*/
 		case 6://2
 			copyR(reservoir, sizeR);
 			break;
@@ -453,7 +525,9 @@ int main()
 		case 10:
 			compareStypeR(reservoir, sizeR);
 			break;
-
+		case 11://2
+			savedR_bin(reservoir, sizeR);
+			break;
 
 		}
 	} while (exit != 0);
