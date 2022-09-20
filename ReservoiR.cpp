@@ -34,115 +34,109 @@ public:
 	Reservoir(char* nameR, double width, double length, double depth, bool type)
 	{
 		cout << "const " << this << endl;
-		//createNameR(nameR);
+		
 		setnameR(nameR);
 		setwidth(width);
 		setlength(length);
 		setdepth(depth);
-	    //settype(type);
+	   
 	}
 	
-	Reservoir(const Reservoir& other) //: m_nameR{ new char[strlen(other.m_nameR) + 1]},
-		//m_width{ other.m_width }, m_length{ other.m_length }, m_depth{ other.m_depth }
+	Reservoir(const Reservoir& other) 
 	{
-		//createNameR(other.m_nameR);
 		setnameR(other.m_nameR);
 		setwidth(other.m_width);
 		setlength(other.m_length);
 		setdepth(other.m_depth);
-		//settype(other.m_type);
-		//strcpy_s(m_nameR, strlen(other.m_nameR) + 1, other.m_nameR);
 	}
 	~Reservoir(){}
 	
-	void setnameR(char* nameR) 
-	{
-		//m_nameR = new char[strlen(nameR) + 1];
-		//strcpy_s(m_nameR, strlen(nameR) + 1, nameR);
-		//createNameR(nameR);
-		
-		//delete[] m_nameR;
-		createNameR(nameR);
-	}
-
-	char* getnameR() { return m_nameR; }
+	void setnameR(char* nameR) 	{createNameR(nameR);}
+	char* getnameR() const { return m_nameR; }
 	void setwidth(double width) { m_width = width; }
-	double getwidth() { return m_width; }
+	double getwidth() const { return m_width; }
 	void setlength(double length) { m_length = length; }
-	double getlength() { return m_length; }
+	double getlength() const { return m_length; }
 	void setdepth(double depth) { m_depth = depth; }
-	double getdepth() { return m_depth; }
+	double getdepth() const { return m_depth; }
 				
-	void addR() 
-	{
-		char nameR[20];
-		cout << "Введите название Водоема : ";
-		double width, length, depth;
-		cin >> nameR;
-		setnameR(nameR);
-		cout << "Введите ширину (m): ";
-		cin >> width;
-		setwidth(width);
-		cout << "Введите длину (m):";
-		cin >> length;
-		setlength(length);
-		cout << "Введите глубину (m): ";
-		cin >> depth;
-    	setdepth(depth);
-	}
+	void addR();
+
+	void print() const;
 	
-	void print() const
-	{
-		cout << "name : " << m_nameR << endl;
-		cout << "width : " << m_width << endl;
-		cout << "length : " << m_length << endl;
-		cout << "depth : " <<  m_depth << endl;
-	}
-
-	double V()
-	{
-		m_V = m_width * m_length * m_depth;
-		cout << "Объем Водоема # " << m_nameR << " = ";
-		return m_V;
-	}
-
-	double S()
-	{
-		m_S = m_width * m_length;
-		//cout << "Площать поверхности Водоема # " << m_nameR << " = ";
-		return m_S;
-	}
-
-	char* getType()
-	{				
-		if (m_depth <= 3 && S() <= 200) {
-			char typeR[20] = "Prud-Bassein";
-			int x = strlen(typeR) + 1;
-			char* f = new char[x];
-			for (size_t i{ 0 }; i < x; i++)
-				f[i] = typeR[i];
-			return f;
-		}
-		else if (S() >= 11500 && m_depth >= 50) {
-			char typeR[20] = "Sea";
-			int x = strlen(typeR) + 1;
-			char* f = new char[x];
-			for (size_t i{ 0 }; i < x; i++)
-				f[i] = typeR[i];
-			return f;
-		}
-		
-		else
-		{
-			char typeR[20] = "Prud";
-			int x = strlen(typeR) + 1;
-			char* f = new char[x];
-			for (size_t i{ 0 }; i < x; i++)
-				f[i] = typeR[i];
-			return f;
-		}
-	}
+	double V();
+	
+	double S();
+	
+	char* getType();
+	
 };
+
+void Reservoir::addR()
+{
+	char nameR[20];
+	cout << "Введите название Водоема : ";
+	double width, length, depth;
+	cin >> nameR;
+	setnameR(nameR);
+	cout << "Введите ширину (m): ";
+	cin >> width;
+	setwidth(width);
+	cout << "Введите длину (m):";
+	cin >> length;
+	setlength(length);
+	cout << "Введите глубину (m): ";
+	cin >> depth;
+	setdepth(depth);
+}
+void Reservoir::print() const
+{
+	cout << "name : " << m_nameR << endl;
+	cout << "width : " << m_width << endl;
+	cout << "length : " << m_length << endl;
+	cout << "depth : " << m_depth << endl;
+}
+double Reservoir::V()
+{
+	m_V = m_width * m_length * m_depth;
+	cout << "Объем Водоема # " << m_nameR << " = ";
+	return m_V;
+}
+double Reservoir::S()
+{
+	m_S = m_width * m_length;
+	//cout << "Площать поверхности Водоема # " << m_nameR << " = ";
+	return m_S;
+}
+char* Reservoir::getType()
+{
+	if (m_depth <= 3 && S() <= 200) {
+		char typeR[20] = "Prud-Bassein";
+		int x = strlen(typeR) + 1;
+		char* f = new char[x];
+		for (size_t i{ 0 }; i < x; i++)
+			f[i] = typeR[i];
+		return f;
+	}
+	else if (S() >= 11500 && m_depth >= 50) {
+		char typeR[20] = "Sea";
+		int x = strlen(typeR) + 1;
+		char* f = new char[x];
+		for (size_t i{ 0 }; i < x; i++)
+			f[i] = typeR[i];
+		return f;
+	}
+
+	else
+	{
+		char typeR[20] = "Prud";
+		int x = strlen(typeR) + 1;
+		char* f = new char[x];
+		for (size_t i{ 0 }; i < x; i++)
+			f[i] = typeR[i];
+		return f;
+	}
+}
 
 void addR(Reservoir*& reservoir, int& sizeR)
 {
